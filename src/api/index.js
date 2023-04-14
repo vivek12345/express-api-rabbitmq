@@ -1,10 +1,20 @@
 const express = require('express');
 
 const emojis = require('./emojis');
+const config = require('../../config/config');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+const { EmailSender } = require('../helper/emailSender');
+
+const emailSender = new EmailSender({
+  rabbitUrl: config.rabbitUrl,
+  from: 'vivek@gmail.com',
+  exchangeName: config.queueName,
+});
+
+router.get('/', async (req, res) => {
+  await emailSender.sendEmail({ to: 'test@gmail.com' });
   res.json({
     message: 'API - 👋🌎🌍🌏',
   });
